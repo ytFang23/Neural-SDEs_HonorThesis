@@ -1,0 +1,42 @@
+C:\Users\FBW\PycharmProjects\latent_ode\run_models.py
+run_models.py --niters 5 -n 1000 -l 10 --dataset periodic --sde-rnn --use-sde-noise --sde-noise-type ou --miss-rate 0.7 --viz --miss-scheme per-time
+Experiment 42635
+Epoch 0001 [Test seq (cond on sampled tp)] | Loss 345.150604 | Likelihood -345.150604 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 397.3492431640625
+Train CE loss (one batch): 0.0
+Test MSE: 0.0698
+Poisson likelihood: 0.0
+CE loss: 0.0
+Experiment 42635
+Epoch 0002 [Test seq (cond on sampled tp)] | Loss 282.352051 | Likelihood -282.352051 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 301.53717041015625
+Train CE loss (one batch): 0.0
+Test MSE: 0.0572
+Poisson likelihood: 0.0
+CE loss: 0.0
+Experiment 42635
+Epoch 0003 [Test seq (cond on sampled tp)] | Loss 202.250488 | Likelihood -202.250488 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 235.61753845214844
+Train CE loss (one batch): 0.0
+Test MSE: 0.0412
+Poisson likelihood: 0.0
+CE loss: 0.0
+Experiment 42635
+Epoch 0004 [Test seq (cond on sampled tp)] | Loss 198.443253 | Likelihood -198.443253 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 207.60211181640625
+Train CE loss (one batch): 0.0
+Test MSE: 0.0404
+Poisson likelihood: 0.0
+CE loss: 0.0
+Experiment 42635
+Epoch 0005 [Test seq (cond on sampled tp)] | Loss 182.686554 | Likelihood -182.686554 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 203.19456481933594
+Train CE loss (one batch): 0.0
+Test MSE: 0.0373
+Poisson likelihood: 0.0
+CE loss: 0.0
