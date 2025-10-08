@@ -96,57 +96,68 @@ class SDE_RNN(Baseline):
         # 形状可以是 (B, T, D) 或 (S, B, T, D)
         info["latent_traj"] = latent_ys
 
+        # ---- add this block right before:  return outputs, info ----
+        if self.use_binary_classif:
+            if self.classif_per_tp:
+                # time-wise classification  -> expect [B, T, ...]
+                logits = self.classifier(latent_ys.squeeze(0))  # [B, T, n_labels] or [B, T, 1]
+            else:
+                # sequence-wise classification -> expect [B, ...]
+                logits = self.classifier(last_hidden.squeeze(0))  # [B, n_labels] or [B, 1]
+
+            info["label_predictions"] = logits.squeeze(-1)  # make it [B] or [B, T]
+
         return outputs, info
 
-def compute_all_losses(self, batch_dict, n_tp_to_sample=None, n_traj_samples=1, kl_coef=1.):
-    # 1) forward
-    pred_x, info = self.get_reconstruction(
-        batch_dict["tp_to_predict"],
-        batch_dict["observed_data"],
-        batch_dict["observed_tp"],
-        mask=batch_dict.get("observed_mask", None),
-        n_traj_samples=n_traj_samples,
-        mode=batch_dict["mode"]
-    )
-    # 2) likelihood / mse （与 Baseline 相同）
-    likelihood = self.get_gaussian_likelihood(batch_dict["data_to_predict"], pred_x,
-                                              mask=batch_dict.get("mask_predicted_data", None))
-    mse = self.get_mse(batch_dict["data_to_predict"], pred_x,
-                       mask=batch_dict.get("mask_predicted_data", None))
-
-    # 3) optional CE (classification)
-    ce_loss = torch.tensor(0., device=pred_x.device)
-    if self.use_binary_classif and (batch_dict["labels"] is not None):
-        if batch_dict["labels"].size(-1) == 1 or len(batch_dict["labels"].size()) == 1:
-            ce_loss = compute_binary_CE_loss(info["label_predictions"], batch_dict["labels"])
-        else:
-            ce_loss = compute_multiclass_CE_loss(info["label_predictions"], batch_dict["labels"],
-                                                 mask=batch_dict.get("mask_predicted_data", None))
-
-    # 4) optional Poisson proc likelihood
-    pois_log_likelihood = torch.tensor(0., device=pred_x.device)
-    if self.use_poisson_proc:
-        pois_log_likelihood = compute_poisson_proc_likelihood(
-            batch_dict["data_to_predict"], pred_x, info,
-            mask=batch_dict.get("mask_predicted_data", None)
-        ).mean(dim=1)  # mean over n_traj
-
-    # 5) final loss 与 Baseline 对齐
-    loss = - torch.mean(likelihood)
-    if self.use_poisson_proc:
-        loss = loss - 0.1 * pois_log_likelihood
-    if self.use_binary_classif:
-        loss = ce_loss if not self.train_classif_w_reconstr else (loss + 100 * ce_loss)
-
-    # 6) 汇总与 Baseline 完全同名的键
-    results = {
-        "loss": torch.mean(loss),
-        "likelihood": torch.mean(likelihood).detach(),
-        "mse": torch.mean(mse).detach(),
-        "pois_likelihood": torch.mean(pois_log_likelihood).detach(),
-        "ce_loss": torch.mean(ce_loss).detach(),
-        "kl": 0., "kl_first_p": 0., "std_first_p": 0.,
-    }
-    if batch_dict["labels"] is not None and self.use_binary_classif:
-        results["label_predictions"] = info["label_predictions"].detach()
-    return results
+    # def compute_all_losses(self, batch_dict, n_tp_to_sample=None, n_traj_samples=1, kl_coef=1.):
+    #     # 1) forward
+    #     pred_x, info = self.get_reconstruction(
+    #         batch_dict["tp_to_predict"],
+    #         batch_dict["observed_data"],
+    #         batch_dict["observed_tp"],
+    #         mask=batch_dict.get("observed_mask", None),
+    #         n_traj_samples=n_traj_samples,
+    #         mode=batch_dict["mode"]
+    #     )
+    #     # 2) likelihood / mse （与 Baseline 相同）
+    #     likelihood = self.get_gaussian_likelihood(batch_dict["data_to_predict"], pred_x,
+    #                                               mask=batch_dict.get("mask_predicted_data", None))
+    #     mse = self.get_mse(batch_dict["data_to_predict"], pred_x,
+    #                        mask=batch_dict.get("mask_predicted_data", None))
+    #
+    #     # 3) optional CE (classification)
+    #     ce_loss = torch.tensor(0., device=pred_x.device)
+    #     if self.use_binary_classif and (batch_dict["labels"] is not None):
+    #         if batch_dict["labels"].size(-1) == 1 or len(batch_dict["labels"].size()) == 1:
+    #             ce_loss = compute_binary_CE_loss(info["label_predictions"], batch_dict["labels"])
+    #         else:
+    #             ce_loss = compute_multiclass_CE_loss(info["label_predictions"], batch_dict["labels"],
+    #                                                  mask=batch_dict.get("mask_predicted_data", None))
+    #
+    #     # 4) optional Poisson proc likelihood
+    #     pois_log_likelihood = torch.tensor(0., device=pred_x.device)
+    #     if self.use_poisson_proc:
+    #         pois_log_likelihood = compute_poisson_proc_likelihood(
+    #             batch_dict["data_to_predict"], pred_x, info,
+    #             mask=batch_dict.get("mask_predicted_data", None)
+    #         ).mean(dim=1)  # mean over n_traj
+    #
+    #     # 5) final loss 与 Baseline 对齐
+    #     loss = - torch.mean(likelihood)
+    #     if self.use_poisson_proc:
+    #         loss = loss - 0.1 * pois_log_likelihood
+    #     if self.use_binary_classif:
+    #         loss = ce_loss if not self.train_classif_w_reconstr else (loss + 100 * ce_loss)
+    #
+    #     # 6) 汇总与 Baseline 完全同名的键
+    #     results = {
+    #         "loss": torch.mean(loss),
+    #         "likelihood": torch.mean(likelihood).detach(),
+    #         "mse": torch.mean(mse).detach(),
+    #         "pois_likelihood": torch.mean(pois_log_likelihood).detach(),
+    #         "ce_loss": torch.mean(ce_loss).detach(),
+    #         "kl": 0., "kl_first_p": 0., "std_first_p": 0.,
+    #     }
+    #     if batch_dict["labels"] is not None and self.use_binary_classif:
+    #         results["label_predictions"] = info["label_predictions"].detach()
+    #     return results

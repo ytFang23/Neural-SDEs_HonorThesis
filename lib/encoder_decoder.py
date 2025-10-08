@@ -454,16 +454,16 @@ class Encoder_z0_ODE_RNN(nn.Module):
         return yi, yi_std, latent_ys, extra_info
 
 
-class Decsder(nn.Module):
+class Decoder(nn.Module):
     def __init__(self, latent_dim, input_dim):
-        super(Decsder, self).__init__()
-        # decsde data from latent space where we are solving an SDE back to the data space
+        super(Decoder, self).__init__()
+        # decode data from latent space where we are solving an SDE back to the data space
 
-        decsder = nn.Sequential(
+        decoder = nn.Sequential(
             nn.Linear(latent_dim, input_dim), )
 
-        utils.init_network_weights(decsder)
-        self.decsder = decsder
+        utils.init_network_weights(decoder)
+        self.decoder = decoder
 
     def forward(self, data):
-        return self.decsder(data)
+        return self.decoder(data)

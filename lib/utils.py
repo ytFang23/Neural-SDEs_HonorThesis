@@ -6,7 +6,6 @@
 import os
 import logging
 import pickle
-
 import torch
 import torch.nn as nn
 import numpy as np
@@ -507,108 +506,248 @@ def split_and_subsample_batch(data_dict, args, data_type = "train"):
 	# 		n_tp_to_sample = args.sample_tp)
 	return processed_dict
 
-
-
-
-
 def compute_loss_all_batches(model,
-	test_dataloader, args,
-	n_batches, experimentID, device,
-	n_traj_samples = 1, kl_coef = 1., 
-	max_samples_for_eval = None):
+							 test_dataloader, args: object,
+							 n_batches, experimentID, device,
+							 n_traj_samples = 1, kl_coef = 1.,
+							 max_samples_for_eval = None):
+	"""
+	Fully-torch evaluation (no sklearn).
+	- PhysioNet: binary ROC AUC using a torch implementation.
+	- Activity: accuracy + macro precision/recall/F1 using a torch confusion matrix,
+	  and per-sequence accuracy statistics (mean/std/var/95% CI) computed with torch ops.
+	"""
 
-	total = {}
-	total["loss"] = 0
-	total["likelihood"] = 0
-	total["mse"] = 0
-	total["kl_first_p"] = 0
-	total["std_first_p"] = 0
-	total["pois_likelihood"] = 0
-	total["ce_loss"] = 0
+	# -------------------------------
+	# helpers (torch-only)
+	# -------------------------------
+	def _roc_auc_score_binary_torch(y_true: torch.Tensor, y_score: torch.Tensor) -> torch.Tensor:
+		"""
+		Compute binary ROC AUC with torch ops.
+		y_true:  (N,) in {0,1}
+		y_score: (N,) real-valued scores (higher = positive)
+		Returns scalar tensor (AUC in [0,1]). If only one class present, returns tensor(0.).
+		"""
+		# Ensure 1D
+		y_true  = y_true.reshape(-1).float()
+		y_score = y_score.reshape(-1).float()
 
+		# Must have both classes
+		pos = (y_true == 1).sum()
+		neg = (y_true == 0).sum()
+		if pos == 0 or neg == 0:
+			return torch.tensor(0.0, device=y_true.device)
+
+		# Sort by score descending
+		order = torch.argsort(y_score, descending=True)
+		y_true_sorted = y_true[order]
+
+		# True positive and false positive cumulative counts
+		tp = torch.cumsum(y_true_sorted, dim=0)
+		fp = torch.cumsum(1.0 - y_true_sorted, dim=0)
+
+		# Prepend (0,0) to start the curve
+		tp = torch.cat([torch.zeros(1, device=tp.device), tp], dim=0)
+		fp = torch.cat([torch.zeros(1, device=fp.device), fp], dim=0)
+
+		# Convert to rates
+		tpr = tp / pos.clamp_min(1)
+		fpr = fp / neg.clamp_min(1)
+
+		# Trapezoidal rule over FPR–TPR curve
+		# AUC = \int TPR dFPR  ≈ Σ (FPR_i - FPR_{i-1}) * (TPR_i + TPR_{i-1}) / 2
+		d_fpr = fpr[1:] - fpr[:-1]
+		avg_tpr = 0.5 * (tpr[1:] + tpr[:-1])
+		auc = (d_fpr * avg_tpr).sum()
+		return auc
+
+	def _confusion_matrix(pred_ids: torch.Tensor, true_ids: torch.Tensor, num_classes: int) -> torch.Tensor:
+		"""
+		Build confusion matrix with torch.
+		pred_ids, true_ids: (N,) int64 in [0, C-1]
+		Returns: (C, C) where rows=true, cols=pred
+		"""
+		C = num_classes
+		cm = torch.zeros(C, C, dtype=torch.float32, device=pred_ids.device)
+		idx = true_ids * C + pred_ids
+		binc = torch.bincount(idx, minlength=C*C).float()
+		cm.view(-1).add_(binc)
+		return cm
+
+	def _precision_recall_f1_macro(cm: torch.Tensor, eps: float = 1e-12):
+		"""
+		Macro precision/recall/F1 from confusion matrix.
+		cm: (C, C) rows=true, cols=pred
+		"""
+		tp = torch.diag(cm)                           # (C,)
+		fp = cm.sum(dim=0) - tp                       # (C,)
+		fn = cm.sum(dim=1) - tp                       # (C,)
+		prec = tp / (tp + fp + eps)
+		rec  = tp / (tp + fn + eps)
+		f1   = 2 * prec * rec / (prec + rec + eps)
+		return prec.mean(), rec.mean(), f1.mean()
+
+	def _squeeze_last(x: torch.Tensor) -> torch.Tensor:
+		"""Squeeze trailing singleton class dim if present."""
+		return x.squeeze(-1) if (x.dim() > 1 and x.size(-1) == 1) else x
+
+	# -------------------------------
+	# accumulators
+	# -------------------------------
+	total = {
+		"loss": 0.0, "likelihood": 0.0, "mse": 0.0,
+		"kl_first_p": 0.0, "std_first_p": 0.0,
+		"pois_likelihood": 0.0, "ce_loss": 0.0
+	}
 	n_test_batches = 0
-	
-	classif_predictions = torch.Tensor([]).to(device)
-	all_test_labels =  torch.Tensor([]).to(device)
 
+	# Collect logits/labels (flattened) across all batches if classification
+	classif_predictions = torch.empty(0, device=device)  # will become (S, Bflat, C)
+	all_test_labels     = torch.empty(0, device=device)  # will become (Bflat, C)
+
+	# -------------------------------
+	# evaluate over batches
+	# -------------------------------
 	for i in range(n_batches):
 		print("Computing loss... " + str(i))
-		
 		batch_dict = get_next_batch(test_dataloader)
 
-		results  = model.compute_all_losses(batch_dict,
-			n_traj_samples = n_traj_samples, kl_coef = kl_coef)
+		results = model.compute_all_losses(
+			batch_dict, n_traj_samples=n_traj_samples, kl_coef=kl_coef
+		)
 
-		if args.classif:
-			n_labels = model.n_labels #batch_dict["labels"].size(-1)
-			n_traj_samples = results["label_predictions"].size(0)
+		# collect classification outputs if present
+		if args.classif and ("label_predictions" in results):
+			logits = results["label_predictions"]  # shape could be (S,B,C) or (S,B,T,C)
+			if logits.dim() == 4:
+				S, B, T, C = logits.shape
+				logits = logits.reshape(S, B*T, C)
+			elif logits.dim() == 3:
+				S, B, C = logits.shape
+				logits = logits.reshape(S, B, C)
+			else:
+				# make it (S,B,C) at least
+				logits = logits.reshape(1, -1, model.n_labels)
 
-			classif_predictions = torch.cat((classif_predictions, 
-				results["label_predictions"].reshape(n_traj_samples, -1, n_labels)),1)
-			all_test_labels = torch.cat((all_test_labels, 
-				batch_dict["labels"].reshape(-1, n_labels)),0)
+			labs = batch_dict["labels"]
+			if labs.dim() == 3:        # (B,T,C) -> (B*T,C)
+				labs = labs.reshape(-1, labs.size(-1))
+			elif labs.dim() == 2:      # (B,C)
+				pass
+			else:                       # (B,) or others -> (B,1)
+				labs = labs.reshape(-1, 1)
 
-		for key in total.keys(): 
-			if key in results:
-				var = results[key]
-				if isinstance(var, torch.Tensor):
-					var = var.detach()
-				total[key] += var
+			# append along Bflat dimension
+			if classif_predictions.numel() == 0:
+				classif_predictions = logits
+				all_test_labels = labs
+			else:
+				# cat over Bflat axis (dim=1 for logits, dim=0 for labels)
+				classif_predictions = torch.cat((classif_predictions, logits), dim=1)
+				all_test_labels     = torch.cat((all_test_labels, labs), dim=0)
+
+		# accumulate scalars
+		for k in total.keys():
+			if k in results:
+				v = results[k]
+				if isinstance(v, torch.Tensor):
+					v = v.detach()
+				total[k] += float(v)
 
 		n_test_batches += 1
-
-		# for speed
 		if max_samples_for_eval is not None:
-			if n_batches * batch_size >= max_samples_for_eval:
-				break
+			break
 
+	# average scalars
 	if n_test_batches > 0:
-		for key, value in total.items():
-			total[key] = total[key] / n_test_batches
- 
-	if args.classif:
+		for k in total:
+			total[k] /= n_test_batches
+
+	if args.classif and classif_predictions.numel() > 0:
+
+		dirname = os.path.join("plots", str(experimentID))
+		os.makedirs(dirname, exist_ok=True)
+
 		if args.dataset == "physionet":
-			#all_test_labels = all_test_labels.reshape(-1)
-			# For each trajectory, we get n_traj_samples samples from z0 -- compute loss on all of them
-			all_test_labels = all_test_labels.repeat(n_traj_samples,1,1)
+			# Binary sequence-level ROC AUC.
+			# classif_predictions: (S, Bflat, C) or (S, Bflat, 1) -> take last dim as score for positive class.
+			if classif_predictions.dim() != 3:
+				classif_predictions = classif_predictions.reshape(classif_predictions.size(0), -1, model.n_labels)
 
+			S, Bflat, C = classif_predictions.shape
+			# labels to shape (Bflat,)
+			labs = all_test_labels
+			labs = _squeeze_last(labs)            # (Bflat,) or (Bflat,C)
+			if labs.dim() > 1:
+				labs = labs[:, 0]                 # use first/only column for binary
 
-			idx_not_nan = ~torch.isnan(all_test_labels)
-			classif_predictions = classif_predictions[idx_not_nan]
-			all_test_labels = all_test_labels[idx_not_nan]
+			# expand labels across S for masking (S,Bflat)
+			labs_S = labs.unsqueeze(0).repeat(S, 1)
+			valid_mask = ~torch.isnan(labs_S)
 
-			dirname = "plots/" + str(experimentID) + "/"
-			os.makedirs(dirname, exist_ok=True)
-			
-			total["auc"] = 0.
-			if torch.sum(all_test_labels) != 0.:
-				print("Number of labeled examples: {}".format(len(all_test_labels.reshape(-1))))
-				print("Number of examples with mortality 1: {}".format(torch.sum(all_test_labels == 1.)))
-
-				# Cannot compute AUC with only 1 class
-				total["auc"] = sk.metrics.roc_auc_score(all_test_labels.cpu().numpy().reshape(-1), 
-					classif_predictions.cpu().numpy().reshape(-1))
+			# pick score: if C==1 use that, else use C-1 as positive logit
+			if C == 1:
+				scores = classif_predictions[..., 0]
 			else:
-				print("Warning: Couldn't compute AUC -- all examples are from the same class")
-		
-		if args.dataset == "activity":
-			all_test_labels = all_test_labels.repeat(n_traj_samples,1,1)
+				scores = classif_predictions[..., -1]
 
-			labeled_tp = torch.sum(all_test_labels, -1) > 0.
+			scores_valid = scores[valid_mask]
+			labs_valid   = labs_S[valid_mask]
 
-			all_test_labels = all_test_labels[labeled_tp]
-			classif_predictions = classif_predictions[labeled_tp]
+			if labs_valid.numel() > 0 and torch.unique(labs_valid).numel() >= 2:
+				auc = _roc_auc_score_binary_torch(labs_valid, scores_valid)
+				total["auc"] = float(auc)
+			else:
+				total["auc"] = 0.0
 
-			# classif_predictions and all_test_labels are in on-hot-encoding -- convert to class ids
-			_, pred_class_id = torch.max(classif_predictions, -1)
-			_, class_labels = torch.max(all_test_labels, -1)
+		elif args.dataset == "activity":
+			# classif_predictions: [S, N, T, C] or [N, T, C]
+			# all_test_labels:     [N, T, C]   (one-hot)
+			preds = classif_predictions
+			labs  = all_test_labels
 
-			pred_class_id = pred_class_id.reshape(-1) 
+			# Ensure sample dimension S exists
+			if preds.dim() == 3:                 # [N, T, C]
+				preds = preds.unsqueeze(0)       # [1, N, T, C]
+			S, N, T, C = preds.shape
 
-			total["accuracy"] = sk.metrics.accuracy_score(
-					class_labels.cpu().numpy(), 
-					pred_class_id.cpu().numpy())
+			# Valid (labeled) time steps
+			valid_mask = (labs.sum(dim=-1) > 0)  # [N, T] boolean
+
+			# Flatten (N, T) → (N*T) so the mask length matches the flattened axis
+			labs_flat   = labs.reshape(N * T, C)           # [N*T, C]
+			preds_flat  = preds.reshape(S, N * T, C)       # [S, N*T, C]
+			valid_flat  = valid_mask.reshape(N * T)        # [N*T]
+
+			# Select only labeled steps
+			labs_sel    = labs_flat[valid_flat, :]         # [M, C]
+			preds_sel   = preds_flat[:, valid_flat, :]     # [S, M, C], same M as above
+
+			if labs_sel.numel() == 0:
+				# No labeled steps in this evaluation slice
+				total["accuracy"] = torch.tensor(0.0, device=device)
+			else:
+				# Convert to class indices
+				class_labels = labs_sel.argmax(dim=-1)     # [M]
+				pred_class_id = preds_sel.argmax(dim=-1)   # [S, M]
+
+				# Accuracy per Monte-Carlo sample; then mean, std, var
+				eq = (pred_class_id == class_labels.unsqueeze(0))  # [S, M] boolean
+				acc_per_s = eq.float().mean(dim=1)                 # [S]
+
+				total["accuracy"] = acc_per_s.mean()               # scalar tensor
+				# (optional) also log dispersion for debugging/monitoring:
+				total["accuracy_std"]  = acc_per_s.std(unbiased=False)
+				total["accuracy_var"]  = acc_per_s.var(unbiased=False)
+		# --- ensure everything we return is a torch.Tensor on the right device ---
+		for k, v in list(total.items()):
+			if not isinstance(v, torch.Tensor):
+				total[k] = torch.tensor(v, device=device, dtype=torch.float32)
+
 	return total
+
+
+
 
 def check_mask(data, mask):
 	#check that "mask" argument indeed contains a mask for data
