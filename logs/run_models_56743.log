@@ -1,0 +1,2 @@
+/Users/celia/PycharmProjects/latent_ode/run_models.py
+run_models.py --niters 5 -n 1000 -l 15 --dataset activity --sde-rnn --rec-dims 16 --rec-layers 2 --gen-layers 2 --units 32 --gru-units 32 --quantization 0.05 --classif --linear-classif

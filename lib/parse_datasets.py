@@ -24,17 +24,43 @@ import random
 
 #####################################################################################################
 def parse_datasets(args, device):
-	
+	def basic_collate_fn(batch, time_steps, args=args, device=device, data_type="train"):
+		# (B, T, D)
+		batch = torch.stack(batch).to(device)
+		B, T, D = batch.shape
 
-	def basic_collate_fn(batch, time_steps, args = args, device = device, data_type = "train"):
-		batch = torch.stack(batch)
+		# --- build a mask (all ones by default) ---
+		mask = torch.ones_like(batch)
+
+		# Only apply synthetic missingness for the periodic dataset and miss_rate < 1
+		if getattr(args, "dataset", "") == "periodic" and float(getattr(args, "miss_rate", 1.0)) < 1.0:
+			keep = float(args.miss_rate)
+
+			if args.miss_scheme == "per-value":
+				# iid drop each entry
+				mask = (torch.rand(B, T, D, device=device) < keep).float()
+
+			elif args.miss_scheme == "per-time":
+				# drop (or keep) entire timesteps for all dims
+				mt = (torch.rand(B, T, 1, device=device) < keep).float()
+				mask = mt.expand(B, T, D)
+
+			elif args.miss_scheme == "per-dim":
+				# drop (or keep) entire variables across all time
+				md = (torch.rand(B, 1, D, device=device) < keep).float()
+				mask = md.expand(B, T, D)
+
+			# Optional: zero-out the unobserved entries so encoders that don’t read mask won’t see them
+			batch = batch * mask
+
 		data_dict = {
-			"data": batch, 
-			"time_steps": time_steps}
-
-		data_dict = utils.split_and_subsample_batch(data_dict, args, data_type = data_type)
+			"data": batch,
+			"time_steps": time_steps.to(device).float(),
+			"mask": mask,
+		}
+		# This will create observed_* and *_to_predict parts respecting the mask
+		data_dict = utils.split_and_subsample_batch(data_dict, args, data_type=data_type)
 		return data_dict
-
 
 	dataset_name = args.dataset
 
@@ -211,8 +237,38 @@ def parse_datasets(args, device):
 	if dataset_obj is None:
 		raise Exception("Unknown dataset: {}".format(dataset_name))
 
-	dataset = dataset_obj.sample_traj(time_steps_extrap, n_samples = args.n, 
-		noise_weight = args.noise_weight)
+	# --- Periodic dataset sampling (supports either i.i.d. or SDE noise) ---
+	if dataset_name == "periodic":
+		# Periodic_1d expects either numpy or torch time steps; numpy is fine
+		ts_np = time_steps_extrap.cpu().numpy()
+
+		# Be consistent with argparse flag names:
+		#   --use-sde-noise
+		#   --sde-noise-type {bm,ou}
+		#   --sde-noise-sigma FLOAT
+		#   --sde-ou-theta FLOAT
+		#   --sde-ou-mu FLOAT
+		#   --noise-weight FLOAT (for i.i.d. noise)
+		use_sde = bool(getattr(args, "use_sde_noise", False))
+
+		sde_type = getattr(args, "sde_noise_type", None)  # "bm" or "ou"
+		sde_sigma = float(getattr(args, "sde_noise_sigma", 0.15))  # default if not given
+		ou_theta = float(getattr(args, "sde_ou_theta", 1.5))
+		ou_mu = float(getattr(args, "sde_ou_mu", 0.0))
+
+		noise_weight = float(getattr(args, "noise_weight", 1.0))  # i.i.d. noise strength
+
+		dataset = dataset_obj.sample_traj(
+			ts_np,
+			n_samples=args.n,
+			# exactly one of these paths will be taken inside sample_traj:
+			use_sde_noise=use_sde,
+			sde_noise_type=sde_type,
+			sde_noise_sigma=sde_sigma,
+			sde_ou_theta=ou_theta,
+			sde_ou_mu=ou_mu,
+			noise_weight=noise_weight,
+		)
 
 	# Process small datasets
 	dataset = dataset.to(device)

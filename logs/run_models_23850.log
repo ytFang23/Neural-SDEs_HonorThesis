@@ -1,0 +1,557 @@
+/Users/celia/PycharmProjects/latent_ode/run_models.py
+run_models.py --niters 50 -n 1000 -l 10 --dataset physionet --sde-rnn --rec-dims 20 --rec-layers 2 --gen-layers 2 --units 16 --gru-units 16 --quantization 0.016 --classif
+Experiment 23850
+Epoch 0001 [Test seq (cond on sampled tp)] | Loss 89.958481 | Likelihood -46.062237 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 88.92179870605469
+Train CE loss (one batch): 0.4431358277797699
+Classification AUC (TEST): 0.5240
+Test MSE: 0.0098
+Poisson likelihood: 0.0
+CE loss: 0.43896248936653137
+Running TEST auc mean/std/var over 1 evals: 0.523955 / 0.000000 / 0.000000
+Running TEST mse mean/std/var over 1 evals: 0.009765 / 0.000000 / 0.000000
+Experiment 23850
+Epoch 0002 [Test seq (cond on sampled tp)] | Loss 77.924637 | Likelihood -33.542923 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 77.13716888427734
+Train CE loss (one batch): 0.4522549510002136
+Classification AUC (TEST): 0.5400
+Test MSE: 0.0073
+Poisson likelihood: 0.0
+CE loss: 0.4438171088695526
+Running TEST auc mean/std/var over 2 evals: 0.531972 / 0.008017 / 0.000064
+Running TEST mse mean/std/var over 2 evals: 0.008513 / 0.001252 / 0.000002
+Experiment 23850
+Epoch 0003 [Test seq (cond on sampled tp)] | Loss 75.273384 | Likelihood -31.021482 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 73.5201416015625
+Train CE loss (one batch): 0.45060035586357117
+Classification AUC (TEST): 0.5562
+Test MSE: 0.0068
+Poisson likelihood: 0.0
+CE loss: 0.44251903891563416
+Running TEST auc mean/std/var over 3 evals: 0.540052 / 0.013169 / 0.000173
+Running TEST mse mean/std/var over 3 evals: 0.007927 / 0.001315 / 0.000002
+Experiment 23850
+Epoch 0004 [Test seq (cond on sampled tp)] | Loss 74.660141 | Likelihood -30.460234 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 73.2646713256836
+Train CE loss (one batch): 0.4507518708705902
+Classification AUC (TEST): 0.5688
+Test MSE: 0.0066
+Poisson likelihood: 0.0
+CE loss: 0.44199907779693604
+Running TEST auc mean/std/var over 4 evals: 0.547242 / 0.016886 / 0.000285
+Running TEST mse mean/std/var over 4 evals: 0.007606 / 0.001267 / 0.000002
+Experiment 23850
+Epoch 0005 [Test seq (cond on sampled tp)] | Loss 74.350227 | Likelihood -30.240469 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 72.92164611816406
+Train CE loss (one batch): 0.4500110149383545
+Classification AUC (TEST): 0.5826
+Test MSE: 0.0066
+Poisson likelihood: 0.0
+CE loss: 0.44109755754470825
+Running TEST auc mean/std/var over 5 evals: 0.554304 / 0.020679 / 0.000428
+Running TEST mse mean/std/var over 5 evals: 0.007405 / 0.001203 / 0.000001
+Experiment 23850
+Epoch 0006 [Test seq (cond on sampled tp)] | Loss 74.205559 | Likelihood -30.059387 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 72.69403076171875
+Train CE loss (one batch): 0.4503430128097534
+Classification AUC (TEST): 0.5969
+Test MSE: 0.0066
+Poisson likelihood: 0.0
+CE loss: 0.4414617121219635
+Running TEST auc mean/std/var over 6 evals: 0.561399 / 0.024658 / 0.000608
+Running TEST mse mean/std/var over 6 evals: 0.007265 / 0.001142 / 0.000001
+Experiment 23850
+Epoch 0007 [Test seq (cond on sampled tp)] | Loss 73.951111 | Likelihood -29.870556 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 72.35614013671875
+Train CE loss (one batch): 0.4493652582168579
+Classification AUC (TEST): 0.6064
+Test MSE: 0.0065
+Poisson likelihood: 0.0
+CE loss: 0.4408055245876312
+Running TEST auc mean/std/var over 7 evals: 0.567829 / 0.027736 / 0.000769
+Running TEST mse mean/std/var over 7 evals: 0.007159 / 0.001088 / 0.000001
+Experiment 23850
+Epoch 0008 [Test seq (cond on sampled tp)] | Loss 73.681351 | Likelihood -29.623335 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 71.96797180175781
+Train CE loss (one batch): 0.4490751624107361
+Classification AUC (TEST): 0.6146
+Test MSE: 0.0065
+Poisson likelihood: 0.0
+CE loss: 0.44058018922805786
+Running TEST auc mean/std/var over 8 evals: 0.573678 / 0.030209 / 0.000913
+Running TEST mse mean/std/var over 8 evals: 0.007074 / 0.001043 / 0.000001
+Experiment 23850
+Epoch 0009 [Test seq (cond on sampled tp)] | Loss 73.452164 | Likelihood -29.334633 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 71.56107330322266
+Train CE loss (one batch): 0.4488062262535095
+Classification AUC (TEST): 0.6196
+Test MSE: 0.0064
+Poisson likelihood: 0.0
+CE loss: 0.44117534160614014
+Running TEST auc mean/std/var over 9 evals: 0.578779 / 0.031927 / 0.001019
+Running TEST mse mean/std/var over 9 evals: 0.007001 / 0.001005 / 0.000001
+Experiment 23850
+Epoch 0010 [Test seq (cond on sampled tp)] | Loss 73.278137 | Likelihood -29.024746 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.0
+Train loss (one batch): 71.19026184082031
+Train CE loss (one batch): 0.4492114186286926
+Classification AUC (TEST): 0.6242
+Test MSE: 0.0064
+Poisson likelihood: 0.0
+CE loss: 0.4425339102745056
+Running TEST auc mean/std/var over 10 evals: 0.583317 / 0.033208 / 0.001103
+Running TEST mse mean/std/var over 10 evals: 0.006937 / 0.000972 / 0.000001
+[metrics] saved running metrics to /Users/celia/PycharmProjects/latent_ode/logs/metrics_run_models_23850.jsonl
+Experiment 23850
+Epoch 0011 [Test seq (cond on sampled tp)] | Loss 73.195412 | Likelihood -28.694805 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.010000000000000009
+Train loss (one batch): 70.85506439208984
+Train CE loss (one batch): 0.4501691460609436
+Classification AUC (TEST): 0.6343
+Test MSE: 0.0063
+Poisson likelihood: 0.0
+CE loss: 0.4450060725212097
+Running TEST auc mean/std/var over 11 evals: 0.587951 / 0.034888 / 0.001217
+Running TEST mse mean/std/var over 11 evals: 0.006878 / 0.000946 / 0.000001
+Experiment 23850
+Epoch 0012 [Test seq (cond on sampled tp)] | Loss 73.284340 | Likelihood -28.376516 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.01990000000000003
+Train loss (one batch): 70.54742431640625
+Train CE loss (one batch): 0.4511674642562866
+Classification AUC (TEST): 0.6391
+Test MSE: 0.0062
+Poisson likelihood: 0.0
+CE loss: 0.44907820224761963
+Running TEST auc mean/std/var over 12 evals: 0.592209 / 0.036266 / 0.001315
+Running TEST mse mean/std/var over 12 evals: 0.006824 / 0.000923 / 0.000001
+Experiment 23850
+Epoch 0013 [Test seq (cond on sampled tp)] | Loss 73.463188 | Likelihood -28.069277 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.029700999999999977
+Train loss (one batch): 70.17665100097656
+Train CE loss (one batch): 0.45130670070648193
+Classification AUC (TEST): 0.6431
+Test MSE: 0.0062
+Poisson likelihood: 0.0
+CE loss: 0.45393913984298706
+Running TEST auc mean/std/var over 13 evals: 0.596121 / 0.037386 / 0.001398
+Running TEST mse mean/std/var over 13 evals: 0.006773 / 0.000904 / 0.000001
+Experiment 23850
+Epoch 0014 [Test seq (cond on sampled tp)] | Loss 73.746231 | Likelihood -27.848679 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.039403990000000055
+Train loss (one batch): 69.68679809570312
+Train CE loss (one batch): 0.44943153858184814
+Classification AUC (TEST): 0.6497
+Test MSE: 0.0061
+Poisson likelihood: 0.0
+CE loss: 0.45897552371025085
+Running TEST auc mean/std/var over 14 evals: 0.599951 / 0.038582 / 0.001489
+Running TEST mse mean/std/var over 14 evals: 0.006727 / 0.000887 / 0.000001
+Experiment 23850
+Epoch 0015 [Test seq (cond on sampled tp)] | Loss 73.965950 | Likelihood -27.703485 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.04900995010000009
+Train loss (one batch): 68.9712142944336
+Train CE loss (one batch): 0.44496336579322815
+Classification AUC (TEST): 0.6564
+Test MSE: 0.0061
+Poisson likelihood: 0.0
+CE loss: 0.4626246690750122
+Running TEST auc mean/std/var over 15 evals: 0.603716 / 0.039847 / 0.001588
+Running TEST mse mean/std/var over 15 evals: 0.006685 / 0.000871 / 0.000001
+Experiment 23850
+Epoch 0016 [Test seq (cond on sampled tp)] | Loss 74.217003 | Likelihood -27.606447 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.058519850599
+Train loss (one batch): 68.18465423583984
+Train CE loss (one batch): 0.4399297833442688
+Classification AUC (TEST): 0.6625
+Test MSE: 0.0061
+Poisson likelihood: 0.0
+CE loss: 0.46610555052757263
+Running TEST auc mean/std/var over 16 evals: 0.607392 / 0.041124 / 0.001691
+Running TEST mse mean/std/var over 16 evals: 0.006646 / 0.000857 / 0.000001
+Experiment 23850
+Epoch 0017 [Test seq (cond on sampled tp)] | Loss 74.219177 | Likelihood -27.478909 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.06793465209301008
+Train loss (one batch): 67.00294494628906
+Train CE loss (one batch): 0.43162018060684204
+Classification AUC (TEST): 0.6679
+Test MSE: 0.0060
+Poisson likelihood: 0.0
+CE loss: 0.4674026370048523
+Running TEST auc mean/std/var over 17 evals: 0.610950 / 0.042359 / 0.001794
+Running TEST mse mean/std/var over 17 evals: 0.006611 / 0.000843 / 0.000001
+Experiment 23850
+Epoch 0018 [Test seq (cond on sampled tp)] | Loss 73.973587 | Likelihood -27.311552 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.07725530557207994
+Train loss (one batch): 65.72210693359375
+Train CE loss (one batch): 0.42225685715675354
+Classification AUC (TEST): 0.6705
+Test MSE: 0.0060
+Poisson likelihood: 0.0
+CE loss: 0.4666203260421753
+Running TEST auc mean/std/var over 18 evals: 0.614261 / 0.043370 / 0.001881
+Running TEST mse mean/std/var over 18 evals: 0.006578 / 0.000831 / 0.000001
+Experiment 23850
+Epoch 0019 [Test seq (cond on sampled tp)] | Loss 73.451660 | Likelihood -27.086441 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.08648275251635917
+Train loss (one batch): 64.36241149902344
+Train CE loss (one batch): 0.41217005252838135
+Classification AUC (TEST): 0.6721
+Test MSE: 0.0060
+Poisson likelihood: 0.0
+CE loss: 0.4636521637439728
+Running TEST auc mean/std/var over 19 evals: 0.617303 / 0.044143 / 0.001949
+Running TEST mse mean/std/var over 19 evals: 0.006546 / 0.000820 / 0.000001
+Experiment 23850
+Epoch 0020 [Test seq (cond on sampled tp)] | Loss 72.801819 | Likelihood -26.864431 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.09561792499119559
+Train loss (one batch): 63.129852294921875
+Train CE loss (one batch): 0.4028421640396118
+Classification AUC (TEST): 0.6753
+Test MSE: 0.0059
+Poisson likelihood: 0.0
+CE loss: 0.4593738913536072
+Running TEST auc mean/std/var over 20 evals: 0.620204 / 0.044845 / 0.002011
+Running TEST mse mean/std/var over 20 evals: 0.006515 / 0.000810 / 0.000001
+[metrics] saved running metrics to /Users/celia/PycharmProjects/latent_ode/logs/metrics_run_models_23850.jsonl
+Experiment 23850
+Epoch 0021 [Test seq (cond on sampled tp)] | Loss 72.403702 | Likelihood -26.606506 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.10466174574128362
+Train loss (one batch): 62.175872802734375
+Train CE loss (one batch): 0.39628392457962036
+Classification AUC (TEST): 0.6780
+Test MSE: 0.0059
+Poisson likelihood: 0.0
+CE loss: 0.4579719305038452
+Running TEST auc mean/std/var over 21 evals: 0.622956 / 0.045461 / 0.002067
+Running TEST mse mean/std/var over 21 evals: 0.006484 / 0.000803 / 0.000001
+Experiment 23850
+Epoch 0022 [Test seq (cond on sampled tp)] | Loss 71.650139 | Likelihood -26.375307 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.11361512828387077
+Train loss (one batch): 61.211647033691406
+Train CE loss (one batch): 0.38903892040252686
+Classification AUC (TEST): 0.6793
+Test MSE: 0.0058
+Poisson likelihood: 0.0
+CE loss: 0.4527483284473419
+Running TEST auc mean/std/var over 22 evals: 0.625518 / 0.045942 / 0.002111
+Running TEST mse mean/std/var over 22 evals: 0.006455 / 0.000796 / 0.000001
+Experiment 23850
+Epoch 0023 [Test seq (cond on sampled tp)] | Loss 71.348175 | Likelihood -26.185234 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.12247897700103216
+Train loss (one batch): 60.61668014526367
+Train CE loss (one batch): 0.3851146399974823
+Classification AUC (TEST): 0.6824
+Test MSE: 0.0058
+Poisson likelihood: 0.0
+CE loss: 0.4516294002532959
+Running TEST auc mean/std/var over 23 evals: 0.627991 / 0.046405 / 0.002153
+Running TEST mse mean/std/var over 23 evals: 0.006426 / 0.000790 / 0.000001
+Experiment 23850
+Epoch 0024 [Test seq (cond on sampled tp)] | Loss 71.069672 | Likelihood -26.012924 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.13125418723102178
+Train loss (one batch): 60.14775085449219
+Train CE loss (one batch): 0.38213005661964417
+Classification AUC (TEST): 0.6839
+Test MSE: 0.0058
+Poisson likelihood: 0.0
+CE loss: 0.45056742429733276
+Running TEST auc mean/std/var over 24 evals: 0.630321 / 0.046782 / 0.002189
+Running TEST mse mean/std/var over 24 evals: 0.006398 / 0.000785 / 0.000001
+Experiment 23850
+Epoch 0025 [Test seq (cond on sampled tp)] | Loss 70.904053 | Likelihood -25.875053 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.13994164535871156
+Train loss (one batch): 59.779911041259766
+Train CE loss (one batch): 0.37990403175354004
+Classification AUC (TEST): 0.6860
+Test MSE: 0.0057
+Poisson likelihood: 0.0
+CE loss: 0.4502900242805481
+Running TEST auc mean/std/var over 25 evals: 0.632548 / 0.047118 / 0.002220
+Running TEST mse mean/std/var over 25 evals: 0.006371 / 0.000780 / 0.000001
+Experiment 23850
+Epoch 0026 [Test seq (cond on sampled tp)] | Loss 70.848518 | Likelihood -25.753523 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.14854222890512447
+Train loss (one batch): 59.55164337158203
+Train CE loss (one batch): 0.37884521484375
+Classification AUC (TEST): 0.6852
+Test MSE: 0.0057
+Poisson likelihood: 0.0
+CE loss: 0.4509499669075012
+Running TEST auc mean/std/var over 26 evals: 0.634575 / 0.047301 / 0.002237
+Running TEST mse mean/std/var over 26 evals: 0.006345 / 0.000776 / 0.000001
+Experiment 23850
+Epoch 0027 [Test seq (cond on sampled tp)] | Loss 70.806244 | Likelihood -25.662399 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.15705680661607324
+Train loss (one batch): 59.41486358642578
+Train CE loss (one batch): 0.3783225119113922
+Classification AUC (TEST): 0.6866
+Test MSE: 0.0057
+Poisson likelihood: 0.0
+CE loss: 0.45143845677375793
+Running TEST auc mean/std/var over 27 evals: 0.636501 / 0.047444 / 0.002251
+Running TEST mse mean/std/var over 27 evals: 0.006321 / 0.000772 / 0.000001
+Experiment 23850
+Epoch 0028 [Test seq (cond on sampled tp)] | Loss 70.970970 | Likelihood -25.615425 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.1654862385499125
+Train loss (one batch): 59.23646545410156
+Train CE loss (one batch): 0.37732306122779846
+Classification AUC (TEST): 0.6868
+Test MSE: 0.0057
+Poisson likelihood: 0.0
+CE loss: 0.45355546474456787
+Running TEST auc mean/std/var over 28 evals: 0.638297 / 0.047514 / 0.002258
+Running TEST mse mean/std/var over 28 evals: 0.006298 / 0.000767 / 0.000001
+Experiment 23850
+Epoch 0029 [Test seq (cond on sampled tp)] | Loss 70.723824 | Likelihood -25.493881 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.17383137616441335
+Train loss (one batch): 58.98076629638672
+Train CE loss (one batch): 0.3757900595664978
+Classification AUC (TEST): 0.6893
+Test MSE: 0.0057
+Poisson likelihood: 0.0
+CE loss: 0.45229941606521606
+Running TEST auc mean/std/var over 29 evals: 0.640054 / 0.047605 / 0.002266
+Running TEST mse mean/std/var over 29 evals: 0.006275 / 0.000763 / 0.000001
+Experiment 23850
+Epoch 0030 [Test seq (cond on sampled tp)] | Loss 70.907112 | Likelihood -25.425261 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.18209306240276923
+Train loss (one batch): 58.87261962890625
+Train CE loss (one batch): 0.37536370754241943
+Classification AUC (TEST): 0.6898
+Test MSE: 0.0056
+Poisson likelihood: 0.0
+CE loss: 0.4548185467720032
+Running TEST auc mean/std/var over 30 evals: 0.641713 / 0.047650 / 0.002270
+Running TEST mse mean/std/var over 30 evals: 0.006254 / 0.000759 / 0.000001
+[metrics] saved running metrics to /Users/celia/PycharmProjects/latent_ode/logs/metrics_run_models_23850.jsonl
+Experiment 23850
+Epoch 0031 [Test seq (cond on sampled tp)] | Loss 70.778030 | Likelihood -25.352259 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.19027213177874158
+Train loss (one batch): 58.50410461425781
+Train CE loss (one batch): 0.37269607186317444
+Classification AUC (TEST): 0.6944
+Test MSE: 0.0056
+Poisson likelihood: 0.0
+CE loss: 0.45425769686698914
+Running TEST auc mean/std/var over 31 evals: 0.643413 / 0.047791 / 0.002284
+Running TEST mse mean/std/var over 31 evals: 0.006234 / 0.000755 / 0.000001
+Experiment 23850
+Epoch 0032 [Test seq (cond on sampled tp)] | Loss 70.397026 | Likelihood -25.270302 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.19836941046095413
+Train loss (one batch): 58.096038818359375
+Train CE loss (one batch): 0.36928412318229675
+Classification AUC (TEST): 0.6944
+Test MSE: 0.0056
+Poisson likelihood: 0.0
+CE loss: 0.4512672424316406
+Running TEST auc mean/std/var over 32 evals: 0.645006 / 0.047867 / 0.002291
+Running TEST mse mean/std/var over 32 evals: 0.006214 / 0.000751 / 0.000001
+Experiment 23850
+Epoch 0033 [Test seq (cond on sampled tp)] | Loss 70.840317 | Likelihood -25.185093 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.20638571635634462
+Train loss (one batch): 58.05278015136719
+Train CE loss (one batch): 0.36973071098327637
+Classification AUC (TEST): 0.6969
+Test MSE: 0.0056
+Poisson likelihood: 0.0
+CE loss: 0.4565522074699402
+Running TEST auc mean/std/var over 33 evals: 0.646578 / 0.047968 / 0.002301
+Running TEST mse mean/std/var over 33 evals: 0.006195 / 0.000747 / 0.000001
+Experiment 23850
+Epoch 0034 [Test seq (cond on sampled tp)] | Loss 70.427078 | Likelihood -25.149563 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.21432185919278124
+Train loss (one batch): 57.663265228271484
+Train CE loss (one batch): 0.36641231179237366
+Classification AUC (TEST): 0.6978
+Test MSE: 0.0056
+Poisson likelihood: 0.0
+CE loss: 0.45277515053749084
+Running TEST auc mean/std/var over 34 evals: 0.648086 / 0.048045 / 0.002308
+Running TEST mse mean/std/var over 34 evals: 0.006177 / 0.000743 / 0.000001
+Experiment 23850
+Epoch 0035 [Test seq (cond on sampled tp)] | Loss 70.266151 | Likelihood -25.047012 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.22217864060085335
+Train loss (one batch): 57.2728385925293
+Train CE loss (one batch): 0.3633068799972534
+Classification AUC (TEST): 0.6978
+Test MSE: 0.0056
+Poisson likelihood: 0.0
+CE loss: 0.45219138264656067
+Running TEST auc mean/std/var over 35 evals: 0.649508 / 0.048074 / 0.002311
+Running TEST mse mean/std/var over 35 evals: 0.006159 / 0.000740 / 0.000001
+Experiment 23850
+Epoch 0036 [Test seq (cond on sampled tp)] | Loss 70.369217 | Likelihood -24.985310 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.2299568541948449
+Train loss (one batch): 57.004112243652344
+Train CE loss (one batch): 0.36110907793045044
+Classification AUC (TEST): 0.6992
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.4538390338420868
+Running TEST auc mean/std/var over 36 evals: 0.650888 / 0.048099 / 0.002314
+Running TEST mse mean/std/var over 36 evals: 0.006143 / 0.000736 / 0.000001
+Experiment 23850
+Epoch 0037 [Test seq (cond on sampled tp)] | Loss 70.404823 | Likelihood -24.926214 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.23765728565289646
+Train loss (one batch): 56.69359588623047
+Train CE loss (one batch): 0.3585832118988037
+Classification AUC (TEST): 0.7015
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.4547860622406006
+Running TEST auc mean/std/var over 37 evals: 0.652255 / 0.048148 / 0.002318
+Running TEST mse mean/std/var over 37 evals: 0.006126 / 0.000733 / 0.000001
+Experiment 23850
+Epoch 0038 [Test seq (cond on sampled tp)] | Loss 70.247093 | Likelihood -24.881496 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.24528071279636743
+Train loss (one batch): 56.428932189941406
+Train CE loss (one batch): 0.35647037625312805
+Classification AUC (TEST): 0.7013
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.4536559581756592
+Running TEST auc mean/std/var over 38 evals: 0.653545 / 0.048154 / 0.002319
+Running TEST mse mean/std/var over 38 evals: 0.006110 / 0.000729 / 0.000001
+Experiment 23850
+Epoch 0039 [Test seq (cond on sampled tp)] | Loss 70.112862 | Likelihood -24.806631 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.25282790566840385
+Train loss (one batch): 56.094703674316406
+Train CE loss (one batch): 0.35366272926330566
+Classification AUC (TEST): 0.7047
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.4530623257160187
+Running TEST auc mean/std/var over 39 evals: 0.654857 / 0.048216 / 0.002325
+Running TEST mse mean/std/var over 39 evals: 0.006095 / 0.000726 / 0.000001
+Experiment 23850
+Epoch 0040 [Test seq (cond on sampled tp)] | Loss 70.059212 | Likelihood -24.774969 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.2602996266117198
+Train loss (one batch): 55.89146423339844
+Train CE loss (one batch): 0.3519202768802643
+Classification AUC (TEST): 0.7024
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.45284244418144226
+Running TEST auc mean/std/var over 40 evals: 0.656046 / 0.048185 / 0.002322
+Running TEST mse mean/std/var over 40 evals: 0.006080 / 0.000723 / 0.000001
+[metrics] saved running metrics to /Users/celia/PycharmProjects/latent_ode/logs/metrics_run_models_23850.jsonl
+Experiment 23850
+Epoch 0041 [Test seq (cond on sampled tp)] | Loss 70.084167 | Likelihood -24.703890 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.26769663034560254
+Train loss (one batch): 55.187522888183594
+Train CE loss (one batch): 0.3454594314098358
+Classification AUC (TEST): 0.7043
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.45380279421806335
+Running TEST auc mean/std/var over 41 evals: 0.657224 / 0.048173 / 0.002321
+Running TEST mse mean/std/var over 41 evals: 0.006066 / 0.000720 / 0.000001
+Experiment 23850
+Epoch 0042 [Test seq (cond on sampled tp)] | Loss 70.878281 | Likelihood -24.700605 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.2750196640421466
+Train loss (one batch): 55.23663330078125
+Train CE loss (one batch): 0.3460283577442169
+Classification AUC (TEST): 0.7017
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.4617767333984375
+Running TEST auc mean/std/var over 42 evals: 0.658282 / 0.048076 / 0.002311
+Running TEST mse mean/std/var over 42 evals: 0.006052 / 0.000716 / 0.000001
+Experiment 23850
+Epoch 0043 [Test seq (cond on sampled tp)] | Loss 71.066284 | Likelihood -24.677393 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.2822694674017251
+Train loss (one batch): 54.639888763427734
+Train CE loss (one batch): 0.340221643447876
+Classification AUC (TEST): 0.6986
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.463888943195343
+Running TEST auc mean/std/var over 43 evals: 0.659220 / 0.047901 / 0.002295
+Running TEST mse mean/std/var over 43 evals: 0.006039 / 0.000713 / 0.000001
+Experiment 23850
+Epoch 0044 [Test seq (cond on sampled tp)] | Loss 72.159363 | Likelihood -24.662043 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.2894467727277079
+Train loss (one batch): 54.24428176879883
+Train CE loss (one batch): 0.33654946088790894
+Classification AUC (TEST): 0.6994
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.47497323155403137
+Running TEST auc mean/std/var over 44 evals: 0.660132 / 0.047730 / 0.002278
+Running TEST mse mean/std/var over 44 evals: 0.006027 / 0.000710 / 0.000001
+Experiment 23850
+Epoch 0045 [Test seq (cond on sampled tp)] | Loss 72.986496 | Likelihood -24.712872 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.29655230500043084
+Train loss (one batch): 53.93407440185547
+Train CE loss (one batch): 0.33327874541282654
+Classification AUC (TEST): 0.6980
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.482736200094223
+Running TEST auc mean/std/var over 45 evals: 0.660974 / 0.047526 / 0.002259
+Running TEST mse mean/std/var over 45 evals: 0.006015 / 0.000706 / 0.000000
+Experiment 23850
+Epoch 0046 [Test seq (cond on sampled tp)] | Loss 74.454185 | Likelihood -24.743231 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.30358678195042654
+Train loss (one batch): 53.358848571777344
+Train CE loss (one batch): 0.3279651701450348
+Classification AUC (TEST): 0.6977
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.4971095621585846
+Running TEST auc mean/std/var over 46 evals: 0.661772 / 0.047310 / 0.002238
+Running TEST mse mean/std/var over 46 evals: 0.006004 / 0.000703 / 0.000000
+Experiment 23850
+Epoch 0047 [Test seq (cond on sampled tp)] | Loss 72.563629 | Likelihood -24.674721 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.3105509141309223
+Train loss (one batch): 52.21075439453125
+Train CE loss (one batch): 0.3166205585002899
+Classification AUC (TEST): 0.7036
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.4788890779018402
+Running TEST auc mean/std/var over 47 evals: 0.662661 / 0.047191 / 0.002227
+Running TEST mse mean/std/var over 47 evals: 0.005993 / 0.000699 / 0.000000
+Experiment 23850
+Epoch 0048 [Test seq (cond on sampled tp)] | Loss 71.621841 | Likelihood -24.652721 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.31744540498961304
+Train loss (one batch): 51.856258392333984
+Train CE loss (one batch): 0.31333619356155396
+Classification AUC (TEST): 0.7080
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.4696912467479706
+Running TEST auc mean/std/var over 48 evals: 0.663605 / 0.047143 / 0.002222
+Running TEST mse mean/std/var over 48 evals: 0.005982 / 0.000696 / 0.000000
+Experiment 23850
+Epoch 0049 [Test seq (cond on sampled tp)] | Loss 71.643784 | Likelihood -24.652580 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.3242709509397169
+Train loss (one batch): 50.816688537597656
+Train CE loss (one batch): 0.3029176592826843
+Classification AUC (TEST): 0.7085
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.46991202235221863
+Running TEST auc mean/std/var over 49 evals: 0.664522 / 0.047090 / 0.002217
+Running TEST mse mean/std/var over 49 evals: 0.005972 / 0.000692 / 0.000000
+Experiment 23850
+Epoch 0050 [Test seq (cond on sampled tp)] | Loss 72.246887 | Likelihood -24.618811 | KL fp 0.0000 | FP STD 0.0000|
+KL coef: 0.3310282414303197
+Train loss (one batch): 49.4630126953125
+Train CE loss (one batch): 0.2893185019493103
+Classification AUC (TEST): 0.7068
+Test MSE: 0.0055
+Poisson likelihood: 0.0
+CE loss: 0.47628074884414673
+Running TEST auc mean/std/var over 50 evals: 0.665367 / 0.046991 / 0.002208
+Running TEST mse mean/std/var over 50 evals: 0.005962 / 0.000689 / 0.000000
+[metrics] saved running metrics to /Users/celia/PycharmProjects/latent_ode/logs/metrics_run_models_23850.jsonl

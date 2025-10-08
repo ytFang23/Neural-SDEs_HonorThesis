@@ -59,8 +59,8 @@ def get_data_min_max(records):
 class PhysioNet(object):
 
 	urls = [
-		'https://physionet.org/files/challenge-2012/1.0.0/set-a.tar.gz?download',
-		'https://physionet.org/files/challenge-2012/1.0.0/set-b.tar.gz?download',
+		'https://physionet.org/files/challenge-2012/1.0.0/set-a.tar.gz',
+        'https://physionet.org/files/challenge-2012/1.0.0/set-b.tar.gz',
 	]
 
 	outcome_urls = ['https://physionet.org/files/challenge-2012/1.0.0/Outcomes-a.txt']
@@ -95,18 +95,40 @@ class PhysioNet(object):
 			data_file = self.training_file
 		else:
 			data_file = self.test_file
-		
+
 		if device == torch.device("cpu"):
-			self.data = torch.load(os.path.join(self.processed_folder, data_file), map_location='cpu')
-			self.labels = torch.load(os.path.join(self.processed_folder, self.label_file), map_location='cpu')
+			self.data = torch.load(
+				os.path.join(self.processed_folder, data_file),
+				map_location="cpu",
+				weights_only=False,  # 关键：关闭“仅权重”模式
+			)
+			self.labels = torch.load(
+				os.path.join(self.processed_folder, self.label_file),
+				map_location="cpu",
+				weights_only=False,
+			)
 		else:
-			self.data = torch.load(os.path.join(self.processed_folder, data_file))
-			self.labels = torch.load(os.path.join(self.processed_folder, self.label_file))
+			self.data = torch.load(
+				os.path.join(self.processed_folder, data_file),
+				weights_only=False,
+			)
+			self.labels = torch.load(
+				os.path.join(self.processed_folder, self.label_file),
+				weights_only=False,
+			)
 
 		if n_samples is not None:
+			# keep first n_samples data items
 			self.data = self.data[:n_samples]
-			self.labels = self.labels[:n_samples]
 
+			# self.labels is a dict: record_id -> label
+			if isinstance(self.labels, dict):
+				# restrict labels to the record_ids kept in self.data
+				kept_ids = {rec_id for (rec_id, _, _, _, _) in self.data}
+				self.labels = {rid: self.labels[rid] for rid in kept_ids if rid in self.labels}
+			else:
+				# in case labels is a list/tensor in some setups
+				self.labels = self.labels[:n_samples]
 
 	def download(self):
 		if self._check_exists():
@@ -119,25 +141,26 @@ class PhysioNet(object):
 
 		# Download outcome data
 		for url in self.outcome_urls:
-			filename = url.rpartition('/')[2]
+			filename = url.rsplit('/', 1)[-1].split('?', 1)[0]
 			download_url(url, self.raw_folder, filename, None)
 
 			txtfile = os.path.join(self.raw_folder, filename)
+			outcomes = {}
 			with open(txtfile) as f:
 				lines = f.readlines()
-				outcomes = {}
 				for l in lines[1:]:
 					l = l.rstrip().split(',')
-					record_id, labels = l[0], np.array(l[1:]).astype(float)
-					outcomes[record_id] = torch.Tensor(labels).to(self.device)
+					record_id = l[0]
+					labs = np.array(l[1:], dtype=float)
+					outcomes[record_id] = torch.tensor(labs, dtype=torch.float32).to(self.device)
 
-				torch.save(
-					labels,
-					os.path.join(self.processed_folder, filename.split('.')[0] + '.pt')
-				)
+			torch.save(
+				outcomes,
+				os.path.join(self.processed_folder, 'Outcomes-a.pt')
+			)
 
 		for url in self.urls:
-			filename = url.rpartition('/')[2]
+			filename = url.rsplit('/', 1)[-1].split('?', 1)[0]
 			download_url(url, self.raw_folder, filename, None)
 			tar = tarfile.open(os.path.join(self.raw_folder, filename), "r:gz")
 			tar.extractall(self.raw_folder)
@@ -209,11 +232,9 @@ class PhysioNet(object):
 
 	def _check_exists(self):
 		for url in self.urls:
-			filename = url.rpartition('/')[2]
-
+			base = url.rsplit('/', 1)[-1].split('?', 1)[0]
 			if not os.path.exists(
-				os.path.join(self.processed_folder, 
-					filename.split('.')[0] + "_" + str(self.quantization) + '.pt')
+					os.path.join(self.processed_folder, base.split('.')[0] + "_" + str(self.quantization) + '.pt')
 			):
 				return False
 		return True

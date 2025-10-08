@@ -84,10 +84,30 @@ class HopperPhysics(object):
 		if self._check_exists():
 			return
 
-		print("Downloading the dataset [325MB] ...")
+		print("Downloading the dataset [~325MB] ...")
 		os.makedirs(self.data_folder, exist_ok=True)
-		url = "http://www.cs.toronto.edu/~rtqichen/datasets/HopperPhysics/training.pt"
-		download_url(url, self.data_folder, "training.pt", None)
+
+		mirrors = [
+			"https://www.cs.toronto.edu/~rtqichen/datasets/HopperPhysics/training.pt",
+			# 需要的话可以再加一个镜像
+			# "https://raw.githubusercontent.com/rtqichen/time-series-datasets/master/HopperPhysics/training.pt",
+		]
+
+		from torchvision.datasets.utils import download_url
+		last_err = None
+		for url in mirrors:
+			try:
+				download_url(url, self.data_folder, "training.pt", md5=None)
+				return
+			except Exception as e:
+				print(f"Download failed from {url}: {e}")
+				last_err = e
+
+		raise RuntimeError(
+			f"Failed to download training.pt. "
+			f"Please place it manually at {os.path.join(self.data_folder, 'training.pt')}.\n"
+			f"Last error: {last_err}"
+		)
 
 	def _generate_random_trajectories(self, n_samples):
 
